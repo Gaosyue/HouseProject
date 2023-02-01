@@ -13,6 +13,9 @@ namespace House.Dto
         /// </summary>
         public int Id { get; set; }
 
+        /// <summary>
+        /// 外检
+        /// </summary>
         public int Pid { get; set; }
     }
 }
