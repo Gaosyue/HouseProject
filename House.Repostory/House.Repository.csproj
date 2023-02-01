@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Customermanagement\**" />
+    <EmbeddedResource Remove="Customermanagement\**" />
+    <None Remove="Customermanagement\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.3.42" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\House.Core\House.Core.csproj" />
+    <ProjectReference Include="..\House.Dto\House.Dto.csproj" />
+    <ProjectReference Include="..\House.IRepostory\House.IRepository.csproj" />
+  </ItemGroup>
+
+</Project>
