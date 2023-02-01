@@ -103,5 +103,14 @@ namespace House.API.Controllers.Dict
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> UpdType(DictType dict)
+        {
+            return await _IDictTypeRepository.UpdateAsync(dict);
+        }
+
     }
 }
