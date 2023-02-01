@@ -9,7 +9,7 @@ namespace House.Dto
     public class Branch
     {
         /// <summary>
-        /// 主键
+        /// 主键11
         /// </summary>
         public int Id { get; set; }
 
