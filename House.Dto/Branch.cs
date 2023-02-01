@@ -14,7 +14,7 @@ namespace House.Dto
         public int Id { get; set; }
 
         /// <summary>
-        /// 外检
+        /// 外检11
         /// </summary>
         public int Pid { get; set; }
     }
