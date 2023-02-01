@@ -8,6 +8,9 @@ namespace House.Dto
 {
     public class Branch
     {
+        /// <summary>
+        /// 主键
+        /// </summary>
         public int Id { get; set; }
 
         public int Pid { get; set; }

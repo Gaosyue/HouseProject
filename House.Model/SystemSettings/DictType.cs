@@ -11,8 +11,6 @@ namespace House.Model.SystemSettings
     /// </summary>
     public class DictType : EntityBase
     {
-        
-        
         public string Name { get; set; }
 
         public string Desc { get; set; }
