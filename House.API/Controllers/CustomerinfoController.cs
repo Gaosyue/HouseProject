@@ -72,8 +72,7 @@ namespace House.API.Controllers
         //{
         //    var cust = await _fileinfo.InsertAsync(fileinfo);
         //    return cust;
-        //}
-
+        //
 
 
 
@@ -83,6 +82,7 @@ namespace House.API.Controllers
         /// <param name="personcharge"></param>
         /// <returns></returns>
         [HttpPost]
+
         public void PersonAddRedis(Personcharge personcharge)
         {
             //加入redis
@@ -129,9 +129,6 @@ namespace House.API.Controllers
         }
 
 
-
-
-
         /// <summary>
         /// 甲方负责人显示
         /// </summary>
@@ -152,9 +149,5 @@ namespace House.API.Controllers
                 throw;
             }
         }
-
-
-
-  
     }
 }
