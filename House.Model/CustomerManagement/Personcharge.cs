@@ -13,8 +13,7 @@ namespace House.Model.CustomerManagement
     public class Personcharge : EntityBase
     {
        
-        public string Cus_Id { get; set; }
-        public string DustomerId { get; set; }
+        public string CustomerId { get; set; }
         public string Name { get; set; }
         public string Post { get; set; }
         public string Phone { get; set; }

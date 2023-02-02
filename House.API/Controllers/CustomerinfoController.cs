@@ -72,8 +72,7 @@ namespace House.API.Controllers
         //{
         //    var cust = await _fileinfo.InsertAsync(fileinfo);
         //    return cust;
-        //}
-
+        //
 
 
 
@@ -83,21 +82,29 @@ namespace House.API.Controllers
         /// <param name="personcharge"></param>
         /// <returns></returns>
         [HttpPost]
+
         public void PersonAddRedis(Personcharge personcharge)
         {
             //加入redis
             //先从redis取出联系人数据
-            var list = RedisHelper.Get<List<Personcharge>>("Person");
+            var list = new List<Personcharge>();
 
-            if (list.Count!=0)
+            list = RedisHelper.Get<List<Personcharge>>("Person");
+
+            if (list==null)
             {
-                list.Add(personcharge);
-                RedisHelper.Set("Person",list);
+                var newlist = new List<Personcharge>();
+                newlist.Add(personcharge);
+
+                RedisHelper.Set("Person", newlist);
             }
             else
             {
+                list.Add(personcharge);
                 RedisHelper.Set("Person", list);
+
             }
+
         }
 
 
@@ -129,9 +136,6 @@ namespace House.API.Controllers
         }
 
 
-
-
-
         /// <summary>
         /// 甲方负责人显示
         /// </summary>
@@ -152,9 +156,5 @@ namespace House.API.Controllers
                 throw;
             }
         }
-
-
-
-  
     }
 }
