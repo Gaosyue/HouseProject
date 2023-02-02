@@ -13,7 +13,7 @@ namespace House.Model
     public class Fileinfo : EntityBase
     {
    
-        public string Cus_Id { get; set; }
+        public string Cus_Id { get; set; }  //客户编号
         public string FileName { get; set; }
         public DateTime UploadTime { get; set; }
         public string FileSize { get; set; }

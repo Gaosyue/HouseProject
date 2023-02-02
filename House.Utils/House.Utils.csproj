@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="NPOI.Excel" Version="2.1.1" />
     <PackageReference Include="ServiceStack.Redis" Version="6.5.0" />
   </ItemGroup>
 
