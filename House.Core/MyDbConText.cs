@@ -1,4 +1,5 @@
 ﻿using House.Model;
+using House.Model.CustomerManagement;
 using House.Model.SystemSettings;
 using Microsoft.EntityFrameworkCore;
 
@@ -61,6 +62,21 @@ namespace House.Core
         /// 字典项
         /// </summary>
         public virtual DbSet<DictItem> DictItem { get; set; }
+        #endregion
+
+        #region 客户信息录入
+        /// <summary>
+        /// 客户信息
+        /// </summary>
+        public virtual DbSet<Customerinfo> Customerinfo { get; set; }
+        /// <summary>
+        /// 负责人信息
+        /// </summary>
+        public virtual DbSet<Personcharge> Personcharge { get; set; }
+        /// <summary>
+        /// 文件信息
+        /// </summary>
+        public virtual DbSet<Fileinfo> Fileinfo { get; set; }
         #endregion
     }
 }

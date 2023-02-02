@@ -104,7 +104,7 @@ namespace House.API.Controllers.Dict
 
 
         /// <summary>
-        /// 
+        /// 修改字典类
         /// </summary>
         /// <returns></returns>
         public async Task<bool> UpdType(DictType dict)
@@ -112,5 +112,14 @@ namespace House.API.Controllers.Dict
             return await _IDictTypeRepository.UpdateAsync(dict);
         }
 
+
+        /// <summary>
+        /// 修改字典类
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> UpdItem(DictItem dict)
+        {
+            return await _IDictItemRepository.UpdateAsync(dict);
+        }
     }
 }
