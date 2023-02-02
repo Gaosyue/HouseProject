@@ -85,6 +85,8 @@ namespace House.API
 
             app.UseRouting();
 
+            app.UseStaticFiles(); //允许 访问服务器静态文件
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
