@@ -242,6 +242,10 @@ namespace House.API.Controllers
             }
         }
 
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 从Redis中取出缓存的联系人表
