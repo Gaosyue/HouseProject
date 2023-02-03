@@ -46,4 +46,9 @@
     <None Include="wwwroot\File\Icon\微信图片_20230110143418.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Image\" />
+    <Folder Include="wwwroot\xls\" />
+  </ItemGroup>
+
 </Project>

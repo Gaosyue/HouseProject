@@ -30,7 +30,6 @@ namespace House.API.Controllers.User
         /// <summary>
         /// 数据显示
         /// </summary>
-        /// <param name="entityBase"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<PageModel<Power>> GetData(string name, int pageindex, int pagesize)

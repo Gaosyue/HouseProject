@@ -81,11 +81,11 @@ namespace House.API
             //跨域
             app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection();//http重定向中间件
 
-            app.UseRouting();
+            app.UseRouting();//路由中间件
 
-            app.UseAuthorization();
+            app.UseAuthorization();//
 
             app.UseEndpoints(endpoints =>
             {
