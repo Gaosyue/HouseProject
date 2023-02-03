@@ -14,7 +14,7 @@ namespace House.Dto
         /// </summary>
         public string Code { get; set; } = "200";
 
-        public RefAsync<int> DataCount { get; set; }
+        public int DataCount { get; set; }
         public int PageCount { get; set; }
         public int PageSize { get; set; }
         public TResult Item { get; set; }
