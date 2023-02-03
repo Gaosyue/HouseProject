@@ -5,6 +5,8 @@ using House.Model;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
+using SecretDemo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,10 +45,19 @@ namespace House.API.Controllers
         [HttpGet]
         public async Task<Token<Personnel>> UserLogin(string account, string password)
         {
+            //使用DES加密
+            //var key = "1qaz2wsx";
+            //var iv = "lkj%0987";
+            //Console.WriteLine(password);
+            //var DESpwd = DESHelper.DESEncrypt(password, key, iv);
+            //数据库中的存储的密码是加密后的
             var predicate = PredicateBuilder.New<Personnel>(true);
             predicate.And(t => t.Account == account && t.Pwd == password);
 
             var data = await _IPersonnelRepository.FirstOrDefaultAsync(predicate);
+
+
+
             if (data != null)
             {
                 Token<Personnel> d = new Token<Personnel>();

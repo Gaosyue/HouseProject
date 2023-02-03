@@ -1,6 +1,7 @@
 ﻿using House.IRepository.DeviceManagement;
 using House.IRepository.Dict;
 using House.Model;
+using House.Model.CustomerManagement;
 using House.Model.SystemSettings;
 using House.Repository.DeviceManagement;
 using LinqKit;
@@ -44,6 +45,7 @@ namespace House.API.Controllers.Dict
             return data;
         } 
 
+
         /// <summary>
         /// 添加字典类
         /// </summary>
@@ -83,6 +85,7 @@ namespace House.API.Controllers.Dict
             return data.OrderBy(t=>t.OrderId).ToList();
         }
 
+
         /// <summary>
         /// 添加字典项
         /// </summary>
@@ -107,6 +110,7 @@ namespace House.API.Controllers.Dict
         /// 修改字典类
         /// </summary>
         /// <returns></returns>
+        [HttpPut]
         public async Task<bool> UpdType(DictType dict)
         {
             return await _IDictTypeRepository.UpdateAsync(dict);
@@ -117,9 +121,64 @@ namespace House.API.Controllers.Dict
         /// 修改字典类
         /// </summary>
         /// <returns></returns>
+        [HttpPut]
         public async Task<bool> UpdItem(DictItem dict)
         {
             return await _IDictItemRepository.UpdateAsync(dict);
+        }
+
+
+        /// <summary>
+        /// 删除字典类
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<bool> DelType(int id)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<DictType>(true);
+
+                predicate.And(t => t.Id == id);
+
+                var model = await _IDictTypeRepository.FirstOrDefaultAsync(predicate);
+
+                var res = await _IDictTypeRepository.DeleteAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 删除字典项
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<bool> DelItem(int id)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<DictItem>(true);
+
+                predicate.And(t => t.Id == id);
+
+                var model = await _IDictItemRepository.FirstOrDefaultAsync(predicate);
+
+                var res = await _IDictItemRepository.DeleteAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }
