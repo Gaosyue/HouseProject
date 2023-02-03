@@ -1,16 +1,19 @@
 ﻿using House.Dto;
-using House.IRepository.CustomerManagement;
-using House.Model.CustomerManagement;
+using House.IRepository.DeviceManagement;
+using House.IRepository.User;
+using House.Model;
+using House.Repository.User;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using System.Linq;
 using House.Utils;
+using House.IRepository.CustomerManagement;
+using House.Model.CustomerManagement;
 using Core.Cache;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace House.API.Controllers
 {
@@ -87,17 +90,12 @@ namespace House.API.Controllers
         {
             //加入redis
             //先从redis取出联系人数据
-            var list = RedisHelper.Get<List<Personcharge>>("Person");
+            List<Personcharge> list = new List<Personcharge>();
+            list = RedisHelper.Get<List<Personcharge>>("Person");
 
-            if (list.Count!=0)
-            {
-                list.Add(personcharge);
-                RedisHelper.Set("Person",list);
-            }
-            else
-            {
-                RedisHelper.Set("Person", list);
-            }
+            list.Add(personcharge);
+            RedisHelper.Set("Person",list);
+
         }
 
 
@@ -130,24 +128,32 @@ namespace House.API.Controllers
 
 
         /// <summary>
-        /// 甲方负责人显示
+        /// 甲方负责人显示(全部负责人=》负责人表)
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<Personcharge>> GetPerson()
+        public async Task<PageModel<Personcharge>> GetPerson(string name,string entrytime,string endtime, int pageindex, int pagesize)
         {
-            try
+            var predicate = PredicateBuilder.New<Personcharge>(true);
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                var predicate = PredicateBuilder.New<Personcharge>(true);
-                var data = await _personchargeRepository.GetAllListAsync(predicate);
-
-                return data;
+                predicate.And(t => t.Name.Contains(name));
             }
-            catch (Exception)
+            if (!string.IsNullOrEmpty(entrytime))
             {
-
-                throw;
+                predicate.And(p => p.EntryTime >= Convert.ToDateTime(entrytime));
             }
+            if (!string.IsNullOrEmpty(endtime))
+            {
+                predicate.And(p => p.EntryTime <= Convert.ToDateTime(endtime));
+            }
+            var data = await _personchargeRepository.GetAllListAsync(predicate);
+
+            PageModel<Personcharge> datalist = new PageModel<Personcharge>();
+            datalist.PageCount = data.Count();
+            datalist.PageSize = Convert.ToInt32(Math.Ceiling((data.Count * 1.0 / pagesize)));
+            datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
+            return datalist;
         }
     }
 }
