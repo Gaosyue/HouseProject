@@ -14,6 +14,7 @@ using House.Utils;
 using House.IRepository.CustomerManagement;
 using House.Model.CustomerManagement;
 using Core.Cache;
+<<<<<<<<< Temporary merge branch 1
 using Microsoft.CodeAnalysis.CSharp;
 using System.IO;
 
