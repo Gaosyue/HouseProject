@@ -1,6 +1,8 @@
 ﻿using House.Model;
+using House.Model.ContractManagement;
 using House.Model.CustomerManagement;
 using House.Model.SystemSettings;
+using House.Model.TimeAndAttendanceManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace House.Core
@@ -64,6 +66,7 @@ namespace House.Core
         public virtual DbSet<DictItem> DictItem { get; set; }
         #endregion
 
+
         #region 客户信息录入
         /// <summary>
         /// 客户信息
@@ -77,6 +80,38 @@ namespace House.Core
         /// 文件信息
         /// </summary>
         public virtual DbSet<Fileinfo> Fileinfo { get; set; }
+        #endregion
+
+
+        #region 合同录入
+        /// <summary>
+        /// 合同信息
+        /// </summary>
+        public virtual DbSet<ContractInfo> ContractInfo { get; set; }
+        /// <summary>
+        /// 合同签约信息
+        /// </summary>
+        public virtual DbSet<Subscriptioninfo> Subscriptioninfo { get; set; }
+        /// <summary>
+        /// 合同费用表
+        /// </summary>
+        public virtual DbSet<ContractCharges> ContractCharges { get; set; }
+        #endregion
+
+
+        #region 考勤管理
+        /// <summary>
+        /// 请假申请表
+        /// </summary>
+        public virtual DbSet<LeaveApplication> LeaveApplication { get; set; }
+        /// <summary>
+        /// 出差申请表
+        /// </summary>
+        public virtual DbSet<TravelApplication> TravelApplication { get; set; }
+        /// <summary>
+        /// 外勤申请表
+        /// </summary>
+        public virtual DbSet<OutworkApplication> OutworkApplication { get; set; }
         #endregion
     }
 }

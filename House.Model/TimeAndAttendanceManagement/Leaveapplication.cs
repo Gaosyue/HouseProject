@@ -10,7 +10,7 @@ namespace House.Model.TimeAndAttendanceManagement
     /// <summary>
     /// 休假申请表
     /// </summary>
-    public class Leaveapplication : EntityBase
+    public class LeaveApplication : EntityBase
     {
         
         public string MyProperty { get; set; }
