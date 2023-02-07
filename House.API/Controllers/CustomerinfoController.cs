@@ -242,7 +242,6 @@ namespace House.API.Controllers
         
         }
 
-
         /// <summary>
         /// 从Redis中取出缓存的联系人表
         /// </summary>
@@ -284,6 +283,8 @@ namespace House.API.Controllers
             datalist.PageCount = (int)Math.Ceiling(list.Count() * 1.0 / pagesize);
             datalist.Data = list.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
             return datalist;
+
+
         }
 
 
@@ -516,8 +517,29 @@ namespace House.API.Controllers
         }
 
 
-
-
+        /// <summary>
+        /// 用于合同=》客户的信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<Customerinfo>> Customer()
+        {
+            var cust = await _customerinfoRepository.GetAllListAsync();
+            return new PageModel<Customerinfo> { Data = cust };
+        }
+        /// <summary>
+        /// 获取详情
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<Customerinfo>> GetCusr(string number)
+        {
+            var predic = PredicateBuilder.New<Customerinfo>(true);
+            predic.And(m=>m.Number==number);
+            var cust = await _customerinfoRepository.FirstOrDefaultAsync(predic);
+            return new PageModel<Customerinfo> { Item = cust };
+        }
 
 
 

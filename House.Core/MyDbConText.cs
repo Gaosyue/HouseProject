@@ -1,4 +1,5 @@
 ﻿using House.Model;
+using House.Model.ContractManagement;
 using House.Model.CustomerManagement;
 using House.Model.SystemSettings;
 using Microsoft.EntityFrameworkCore;
@@ -77,6 +78,22 @@ namespace House.Core
         /// 文件信息
         /// </summary>
         public virtual DbSet<Fileinfo> Fileinfo { get; set; }
+        #endregion
+
+
+        #region 合同录入
+        /// <summary>
+        /// 合同信息
+        /// </summary>
+        public virtual DbSet<ContractInfo> ContractInfo { get; set; }
+        /// <summary>
+        /// 合同签约信息
+        /// </summary>
+        public virtual DbSet<Subscriptioninfo> Subscriptioninfo { get; set; }
+        /// <summary>
+        /// 合同费用表
+        /// </summary>
+        public virtual DbSet<ContractCharges> ContractCharges { get; set; }
         #endregion
     }
 }

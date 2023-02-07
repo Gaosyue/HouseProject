@@ -14,7 +14,6 @@ namespace House.Model.ContractManagement
     public class ContractInfo : EntityBase
     {
        
-        public string Cus_Id { get; set; }
         public string ContractId { get; set; }
         public string ContractNum { get; set; }
         public string ContractName { get; set; }
