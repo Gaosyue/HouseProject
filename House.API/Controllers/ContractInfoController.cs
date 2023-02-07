@@ -31,6 +31,34 @@ namespace House.API.Controllers
             _contractChargesRepository=contractChargesRepository;
         }
 
+
+        /// <summary>
+        /// 显示合同信息列表
+        /// </summary>
+        /// <param name="contractName"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<ContractInfo>> GetCust(string contractName, int pageindex, int pagesize)
+        {
+            var predicate = PredicateBuilder.New<ContractInfo>(true);
+            if (!string.IsNullOrWhiteSpace(contractName))
+            {
+                predicate.And(t => t.ContractName.Contains(contractName));
+            }
+
+            var data = await _contractInfoRepository.GetAllListAsync(predicate);
+
+            int i = data.Count();
+            PageModel<ContractInfo> datalist = new PageModel<ContractInfo>();
+            datalist.DataCount = i;
+            datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
+            datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
+            return datalist;
+        }
+
+
         /// <summary>
         /// 合同信息的录入
         /// </summary>
@@ -45,6 +73,33 @@ namespace House.API.Controllers
                 return res;
             }
             catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 根据Id删除合同信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<bool> DelSubscr(int id)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<ContractInfo>(true);
+
+                predicate.And(t => t.Id == id);
+
+                var model = await _contractInfoRepository.FirstOrDefaultAsync(predicate);
+
+                var res = await _contractInfoRepository.DeleteAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
             {
 
                 throw;

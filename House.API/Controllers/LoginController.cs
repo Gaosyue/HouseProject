@@ -46,13 +46,13 @@ namespace House.API.Controllers
         public async Task<Token<Personnel>> UserLogin(string account, string password)
         {
             //使用DES加密
-            //var key = "1qaz2wsx";
-            //var iv = "lkj%0987";
-            //Console.WriteLine(password);
-            //var DESpwd = DESHelper.DESEncrypt(password, key, iv);
+            var key = "1qaz2wsx";
+            var iv = "lkj%0987";
+            
+            var DESpwd = DESHelper.DESEncrypt(password, key, iv);
             //数据库中的存储的密码是加密后的
             var predicate = PredicateBuilder.New<Personnel>(true);
-            predicate.And(t => t.Account == account && t.Pwd == password);
+            predicate.And(t => t.Account == account && t.Pwd == DESpwd);
 
             var data = await _IPersonnelRepository.FirstOrDefaultAsync(predicate);
 
