@@ -122,5 +122,12 @@ namespace House.Core
         /// </summary>
         public virtual DbSet<OutworkApplication> OutworkApplication { get; set; }
         #endregion
+
+        #region 公告
+        /// <summary>
+        /// 公告表
+        /// </summary>
+        public virtual DbSet<Notice> Notice { get; set; }
+        #endregion
     }
 }
