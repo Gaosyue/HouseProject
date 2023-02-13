@@ -98,16 +98,19 @@ namespace House.API.Controllers.Application
             }
         }
 
+        ///// <summary>
+        ///// 查询请假信息(单)
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public async Task<PageModel<LeaveApplication>> GetLeaveApplication(string reason)
+        //{
+        //    if (!string.IsNullOrWhiteSpace(reason))
+        //    {
 
-        /// <summary>
-        /// 查询请假信息(单)
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<PageModel<LeaveApplication>> GetLeaveApplication(string )
-        {
+        //    }
+        //}
 
-        }
 
 
     }
