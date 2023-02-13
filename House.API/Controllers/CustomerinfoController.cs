@@ -14,7 +14,11 @@ using House.Utils;
 using House.IRepository.CustomerManagement;
 using House.Model.CustomerManagement;
 using Core.Cache;
+using Microsoft.CodeAnalysis.CSharp;
+<<<<<<<<< Temporary merge branch 1
+=========
 using System.IO;
+using House.Core;
 using Microsoft.CodeAnalysis.CSharp;
 using House.IRepository.ContractManagement;
 
@@ -30,13 +34,15 @@ namespace House.API.Controllers
         private readonly IPersonchargeRepository _personchargeRepository;
         private readonly IFileinfoRepository _fileinfoRepository;
 
+        public readonly MyDbConText _db;
 
-        public CustomerinfoController(ICustomerinfoRepository customerinfoRepository, IContractInfoRepository contractInfoRepository, IPersonchargeRepository personchargeRepository, IFileinfoRepository fileinfoRepository)
+        public CustomerinfoController(ICustomerinfoRepository customerinfoRepository, IContractInfoRepository contractInfoRepository, IPersonchargeRepository personchargeRepository, IFileinfoRepository fileinfoRepository, MyDbConText db)
         {
             _customerinfoRepository = customerinfoRepository;
             _contractInfoRepository = contractInfoRepository;
             _personchargeRepository = personchargeRepository;
             _fileinfoRepository = fileinfoRepository;
+            _db = db;
         }
 
         /// <summary>
@@ -237,8 +243,8 @@ namespace House.API.Controllers
 
                 throw;
             }
+        
         }
-
 
         /// <summary>
         /// 从Redis中取出缓存的联系人表
@@ -273,14 +279,18 @@ namespace House.API.Controllers
             }
             if (!string.IsNullOrEmpty(endtime))
             {
-                predicate.And(p => p.EntryTime <= Convert.ToDateTime(endtime));
-            }
-            var data = await _personchargeRepository.GetAllListAsync(predicate);
+            var list = await _personchargeRepository.GetAllListAsync(predicate);
+
+            datalist.DataCount = list.Count(); ;
+            datalist.PageCount = (int)Math.Ceiling(list.Count() * 1.0 / pagesize);
+            datalist.Data = list.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
             int i = data.Count;
-            PageModel<Personcharge> datalist = new PageModel<Personcharge>();
+=========
             datalist.DataCount = i;
             datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
             datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
+            datalist.PageCount = (int)Math.Ceiling(list.Count() * 1.0 / pagesize);
+            datalist.Data = list.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
             return datalist;
 
 
@@ -540,6 +550,9 @@ namespace House.API.Controllers
             return new PageModel<Customerinfo> { Item = cust };
         }
 
+
+
+
         ///// <summary>
         ///// 导出数据到Excel 标题 + 合并单元格
         ///// </summary>
@@ -549,7 +562,7 @@ namespace House.API.Controllers
         //    HSSFWorkbook workbook = new HSSFWorkbook();
 
         //    //创建Sheet表单
-        //    HSSFSheet sheet = (HSSFSheet)workbook.CreateSheet("前人种地后人收，说什么龙争虎斗");
+        //    HSSFSheet sheet = (HSSFSheet)workbook.CreateSheet("，");
 
         //    //设置表单列的宽度
         //    sheet.DefaultColumnWidth = 20;
@@ -557,18 +570,18 @@ namespace House.API.Controllers
 
         //    //标题行
         //    HSSFRow dataRowTitle = (HSSFRow)sheet.CreateRow(0);
-        //    dataRowTitle.CreateCell(0).SetCellStyle(workbook, "前人种地后人收，说什么龙争虎斗", ConfigNpoiCell.ConfigStyle.Head);
+        //    dataRowTitle.CreateCell(0).SetCellStyle(workbook, "，", ConfigNpoiCell.ConfigStyle.Head);
 
         //    //合并列 CellRangeAddress()该方法的参数次序是：开始行号，结束行号，开始列号，结束列号。
         //    sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 4));
 
         //    //新建列头行
         //    HSSFRow dataRow = (HSSFRow)sheet.CreateRow(1);
-        //    dataRow.CreateCell(0).SetCellStyle(workbook, "编号");
-        //    dataRow.CreateCell(1).SetCellStyle(workbook, "姓名");
-        //    dataRow.CreateCell(2).SetCellStyle(workbook, "家庭住址");
-        //    dataRow.CreateCell(3).SetCellStyle(workbook, "收入");
-        //    dataRow.CreateCell(4).SetCellStyle(workbook, "创建日期");
+        //    dataRow.CreateCell(0).SetCellStyle(workbook, "");
+        //    dataRow.CreateCell(1).SetCellStyle(workbook, "");
+        //    dataRow.CreateCell(2).SetCellStyle(workbook, "");
+        //    dataRow.CreateCell(3).SetCellStyle(workbook, "");
+        //    dataRow.CreateCell(4).SetCellStyle(workbook, "");
         //    dataRow.Height = 400;
 
         //    var row = 2;
@@ -577,10 +590,10 @@ namespace House.API.Controllers
         //    {
         //        dataRow = (HSSFRow)sheet.CreateRow(row);//新建数据行
         //        dataRow.CreateCell(0).SetCellStyle(workbook, m.Id);
-        //        dataRow.CreateCell(1).SetCellStyle(workbook, m.Name);
-        //        dataRow.CreateCell(2).SetCellStyle(workbook, m.Address);
-        //        dataRow.CreateCell(3).SetCellStyle(workbook, m.InCome);
-        //        dataRow.CreateCell(4).SetCellStyle(workbook, m.CreateTime);
+        //        dataRow.CreateCell(1).SetCellStyle(workbook, m.);
+        //        dataRow.CreateCell(2).SetCellStyle(workbook, m.);
+        //        dataRow.CreateCell(3).SetCellStyle(workbook, m.);
+        //        dataRow.CreateCell(4).SetCellStyle(workbook, m.);
 
         //        if (m.Id % 2 == 1)
         //        {
@@ -590,12 +603,15 @@ namespace House.API.Controllers
         //        row++;
         //    });
 
-        //    var path = _hostingEnvironment.WebRootPath + "/excel/temp/" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+        //    var path = _hostingEnvironment.WebRootPath + "/excel/temp/" + DateTime.Now.ToString("yyyyMMddHHmmss") +"客户信息导出"+ ".xls";
 
         //    using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
         //    {
         //        workbook.Write(fs);
         //    }
+
+        //    var url = "https://localhost:44360/wwwroot/xls/"
+        //    return 
         //}
 
 
