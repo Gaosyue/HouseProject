@@ -15,12 +15,12 @@ using House.IRepository.CustomerManagement;
 using House.Model.CustomerManagement;
 using Core.Cache;
 using Microsoft.CodeAnalysis.CSharp;
-<<<<<<<<< Temporary merge branch 1
-=========
 using System.IO;
 using House.Core;
-using Microsoft.CodeAnalysis.CSharp;
 using House.IRepository.ContractManagement;
+using House.Model.ContractManagement;
+using NPOI.POIFS.Crypt.Dsig;
+using House.Repository.ContractManagement;
 
 namespace House.API.Controllers
 {
@@ -279,21 +279,15 @@ namespace House.API.Controllers
             }
             if (!string.IsNullOrEmpty(endtime))
             {
-            var list = await _personchargeRepository.GetAllListAsync(predicate);
-
-            datalist.DataCount = list.Count(); ;
-            datalist.PageCount = (int)Math.Ceiling(list.Count() * 1.0 / pagesize);
-            datalist.Data = list.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
-            int i = data.Count;
-=========
+                predicate.And(p => p.EntryTime <= Convert.ToDateTime(endtime));
+            }
+            var data = await _personchargeRepository.GetAllListAsync(predicate);
+            int i = data.Count();
+            PageModel<Personcharge> datalist = new PageModel<Personcharge>();
             datalist.DataCount = i;
             datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
             datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
-            datalist.PageCount = (int)Math.Ceiling(list.Count() * 1.0 / pagesize);
-            datalist.Data = list.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
             return datalist;
-
-
         }
 
 
