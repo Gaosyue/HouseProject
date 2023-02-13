@@ -24,7 +24,7 @@ namespace House.API.Controllers
         }
 
         /// <summary>
-        /// 公告
+        /// 公告1
         /// </summary>
         /// <param name="title"></param>
         /// <param name="pageindex"></param>

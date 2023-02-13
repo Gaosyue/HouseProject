@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
 using House.Model.TimeAndAttendanceManagement;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace House.API.Controllers.Application
 {
@@ -98,7 +99,15 @@ namespace House.API.Controllers.Application
         }
 
 
+        /// <summary>
+        /// 查询请假信息(单)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<LeaveApplication>> GetLeaveApplication(string )
+        {
 
+        }
 
 
     }
