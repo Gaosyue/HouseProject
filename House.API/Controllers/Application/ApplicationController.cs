@@ -98,6 +98,47 @@ namespace House.API.Controllers.Application
             }
         }
 
+        /// <summary>
+        /// 查询请假信息(单)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<LeaveApplication>> GetLeaveApplication(string applicant)
+        {
+            if (!string.IsNullOrWhiteSpace(applicant))
+            {
+                var predic = PredicateBuilder.New<LeaveApplication>(true);
+                predic.And(m => m.Applicant == applicant);
+                var cust = await _leaveRepository.FirstOrDefaultAsync(predic);
+                return new PageModel<LeaveApplication> { Data = cust };
+            }
+            else
+            {
+                return new PageModel<LeaveApplication> { Data = null };
+            }
+        }
+
+
+        /// <summary>
+        /// 查询出差申请表信息(单)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<TravelApplication>> GetTravelApplication(string applicant)
+        {
+            if (!string.IsNullOrWhiteSpace(applicant))
+            {
+                var predic = PredicateBuilder.New<TravelApplication>(true);
+                predic.And(m => m.Applicant == applicant);
+                var cust = await _travelRepository.FirstOrDefaultAsync(predic);
+                return new PageModel<TravelApplication> { Data = cust };
+            }
+            else
+            {
+                return new PageModel<TravelApplication> { Data = null };
+            }
+        }
+
         ///// <summary>
         ///// 查询请假信息(单)
         ///// </summary>
