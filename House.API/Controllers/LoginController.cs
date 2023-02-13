@@ -48,7 +48,7 @@ namespace House.API.Controllers
             //使用DES加密
             var key = "1qaz2wsx";
             var iv = "lkj%0987";
-            
+            Console.WriteLine(password);
             var DESpwd = DESHelper.DESEncrypt(password, key, iv);
             //数据库中的存储的密码是加密后的
             var predicate = PredicateBuilder.New<Personnel>(true);

@@ -11,7 +11,7 @@ namespace House.Model.TimeAndAttendanceManagement
     /// <summary>
     /// 出差申请表
     /// </summary>
-    public class Travelapplication : EntityBase
+    public class TravelApplication : EntityBase
     {
    
         public string ProjectName { get; set; }

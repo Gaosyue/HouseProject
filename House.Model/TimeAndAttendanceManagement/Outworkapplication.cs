@@ -11,7 +11,7 @@ namespace House.Model.TimeAndAttendanceManagement
     /// <summary>
     /// 外勤申请表
     /// </summary>
-    public class Outworkapplication : EntityBase
+    public class OutworkApplication : EntityBase
     {
         
         public string ProjectName { get; set; }
