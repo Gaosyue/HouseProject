@@ -28,5 +28,6 @@ namespace House.Model.ContractManagement
         public DateTime SigningDate { get; set; }
         public string CustomerId { get; set; }
 
+        public decimal Percentage { get; set; }
     }
 }

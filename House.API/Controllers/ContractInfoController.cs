@@ -6,6 +6,7 @@ using House.Model.CustomerManagement;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace House.API.Controllers
         {
             _contractInfoRepository = contractInfoRepository;
             _subscriptionInfoRepository = subscriptionInfoRepository;
-            _contractChargesRepository=contractChargesRepository;
+            _contractChargesRepository = contractChargesRepository;
         }
 
 
@@ -57,6 +58,112 @@ namespace House.API.Controllers
             datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
             return datalist;
         }
+
+
+        /// <summary>
+        /// 显示收费详情列表
+        /// </summary>
+        /// <param name="contractId"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<ContractCharges>> GetContractChargesList(string contractId, int pageindex = 1, int pagesize = 10)
+        {
+            ExpressionStarter<ContractCharges> predicate = PredicateBuilder.New<ContractCharges>(true);
+            if (!string.IsNullOrWhiteSpace(contractId))
+            {
+                predicate.And(t => t.ContractId == contractId);
+            }
+
+            var data = await _contractChargesRepository.GetAllListAsync(predicate);
+
+            int i = data.Count();
+            PageModel<ContractCharges> datalist = new PageModel<ContractCharges>();
+            datalist.DataCount = i;
+            datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
+            datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
+            return datalist;
+        }
+
+
+        /// <summary>
+        /// 根据Id删除收费信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<bool> DelContractCharges(int id)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<ContractCharges>(true);
+
+                predicate.And(t => t.Id == id);
+
+                var model = await _contractChargesRepository.FirstOrDefaultAsync(predicate);
+
+                var res = await _contractChargesRepository.DeleteAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 收费列表的录入
+        /// </summary>
+        /// <param name="contractCharges"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<bool> ContractAdd(ContractCharges contractCharges)
+        {
+            try
+            {
+                var res = await _contractChargesRepository.InsertAsync(contractCharges);
+
+                var result = UpdateContract(contractCharges.ContractId, contractCharges.AmountRecorded);
+
+                if (res && result)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 修改合同总收费金额 每次收费+=金额，然后更新
+        /// </summary>
+        /// <param name="contractId"></param>
+        /// <param name="amountRecorded"></param>
+        /// <returns></returns>
+        private bool UpdateContract(string contractId, decimal amountRecorded)
+        {
+            ContractInfo model = _contractInfoRepository.FirstOrDefault(a => a.ContractId == contractId);
+
+            model.Percentage += amountRecorded;
+
+            var res = _contractInfoRepository.Update(model);
+
+            return res;
+        }
+
+
 
 
         /// <summary>
@@ -145,7 +252,7 @@ namespace House.API.Controllers
         {
             var list = RedisHelper.Get<List<Subscriptioninfo>>("Subscr");
 
-            if (list==null)
+            if (list == null)
             {
                 return null;
             }
@@ -155,29 +262,6 @@ namespace House.API.Controllers
 
                 return list;
             }
-        }
-
-
-        /// <summary>
-        /// 合同收费列表
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<PageModel<Subscriptioninfo>> GetPerson(string agreementName, int pageindex, int pagesize)
-        {
-            var predicate = PredicateBuilder.New<Subscriptioninfo>(true);
-            if (!string.IsNullOrWhiteSpace(agreementName))
-            {
-                predicate.And(t => t.AgreementName.Contains(agreementName));
-            }
-
-            var data = await _subscriptionInfoRepository.GetAllListAsync(predicate);
-            int i = data.Count;
-            PageModel<Subscriptioninfo> datalist = new PageModel<Subscriptioninfo>();
-            datalist.DataCount = i;
-            datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
-            datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
-            return datalist;
         }
 
         /// <summary>
@@ -243,6 +327,40 @@ namespace House.API.Controllers
         public string GetDateTimeCode()
         {
             return DateTime.Now.ToString("yyyyMMddHHmmss");
+        }
+
+
+        /// <summary>
+        /// 合同信息列表的反填
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<PageModel<ContractInfo>> ReverContractInfo(int id)
+        {
+            var contra = PredicateBuilder.New<ContractInfo>(m => m.Id == id);
+            ContractInfo contractInfo = await _contractInfoRepository.FirstOrDefaultAsync(contra);
+            var pagemodel = new PageModel<ContractInfo>()
+            {
+                Item = contractInfo,
+            };
+            return pagemodel;
+        }
+
+        /// <summary>
+        /// 合同信息的修改
+        /// </summary>
+        /// <param name="contractInfo"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<PageModel<ContractInfo>> UpContractInfo(ContractInfo contractInfo)
+        {
+            var cont = await _contractInfoRepository.UpdateAsync(contractInfo);
+            var pagemodel = new PageModel<ContractInfo>()
+            {
+                Code = cont ? "1" : "0"
+            };
+            return pagemodel;
         }
     }
 }

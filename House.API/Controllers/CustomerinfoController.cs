@@ -16,6 +16,7 @@ using House.Model.CustomerManagement;
 using Core.Cache;
 using System.IO;
 using Microsoft.CodeAnalysis.CSharp;
+using House.IRepository.ContractManagement;
 
 namespace House.API.Controllers
 {

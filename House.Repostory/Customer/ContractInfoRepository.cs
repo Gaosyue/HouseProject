@@ -1,6 +1,6 @@
 ﻿using House.Core;
 using House.IRepository;
-using House.IRepository.CustomerManagement;
+using House.IRepository.ContractManagement;
 using House.Model.ContractManagement;
 using System;
 using System.Collections.Generic;

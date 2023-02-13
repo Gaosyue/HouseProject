@@ -149,7 +149,7 @@ namespace House.API.Controllers.User
         /// <summary>
         /// 可以根据他的数据进行重新绑定权限
         /// </summary>
-        /// <param name="rid"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
         public async Task<bool> PRDelete(List<PersonnelRole> data)
