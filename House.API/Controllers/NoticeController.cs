@@ -9,6 +9,9 @@ using System;
 using House.Model;
 using System.Linq;
 using House.Model.CustomerManagement;
+using House.Model.SystemSettings;
+using House.Repository.Noticement;
+using System.Collections.Generic;
 
 namespace House.API.Controllers
 {
@@ -17,14 +20,50 @@ namespace House.API.Controllers
     [ApiExplorerSettings(GroupName = "Notice")]
     public class NoticeController : ControllerBase
     {
-        private readonly INoticeRepository _noticeRepository;
-        public NoticeController(INoticeRepository noticeRepository)
+        private readonly INoticeRepository _INoticeRepository;
+        private readonly IHumanResourcesRepository _IHumanResourcesRepository;
+        public NoticeController(INoticeRepository noticeRepository, IHumanResourcesRepository iHumanResourcesRepository)
         {
-            _noticeRepository = noticeRepository;
+            _INoticeRepository = noticeRepository;
+            _IHumanResourcesRepository = iHumanResourcesRepository;
         }
 
         /// <summary>
-        /// 公告1
+        /// 获取人员所有信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<List<PerSonLIst>> GetHumen()
+        {
+            var predicate = PredicateBuilder.New<Humanresources>(true);
+
+            var data = await _IHumanResourcesRepository.GetAllListAsync(predicate);
+            List<PerSonLIst> list = new List<PerSonLIst>();
+            foreach (var item in data)
+            {
+                PerSonLIst peritem = new PerSonLIst();
+                peritem.key = item.Id;
+                peritem.label = "     " + item.Name;
+                list.Add(peritem);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 公告数据添加
+        /// </summary>
+        /// <param name="notice"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<bool> CreateAdd(Notice notice)
+        {
+            var state = await _INoticeRepository.InsertAsync(notice);
+            return state;
+        }
+
+
+        /// <summary>
+        /// 显示合同信息列表
         /// </summary>
         /// <param name="title"></param>
         /// <param name="pageindex"></param>
@@ -39,7 +78,7 @@ namespace House.API.Controllers
                 predicate.And(t => t.Title.Contains(title));
             }
 
-            var data = await _noticeRepository.GetAllListAsync(predicate);
+            var data = await _INoticeRepository.GetAllListAsync(predicate);
 
             int i = data.Count();
             PageModel<Notice> datalist = new PageModel<Notice>();
@@ -50,58 +89,77 @@ namespace House.API.Controllers
         }
 
         /// <summary>
-        /// 根据Id删除公告
+        /// 返回一条数据
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete]
-        public async Task<bool> DelNotice(int id)
+        [HttpGet]
+        public async Task<PageModel<NoticeDto>> Recoil(int id)
         {
-            try
+            var predicate = PredicateBuilder.New<Notice>(true);
+            predicate.And(t => t.Id == id);
+            var data = await _INoticeRepository.FirstOrDefaultAsync(predicate);
+
+            NoticeDto Dtp = new NoticeDto();
+            Dtp.Title = data.Title;
+            Dtp.Content = data.Content;
+            Dtp.ReleaseTime = data.ReleaseTime;
+            Dtp.PublishUser = data.PublishUser;
+            Dtp.State = data.State;
+
+
+
+            List<int> i = new List<int>();
+            var item = data.AcceptRole.Split(',');
+            foreach (var a in item)
             {
-                var predicate = PredicateBuilder.New<Notice>(true);
-
-                predicate.And(t => t.Id == id);
-
-                var model = await _noticeRepository.FirstOrDefaultAsync(predicate);
-
-                var res = await _noticeRepository.DeleteAsync(model);
-
-                return res;
+                int d = Convert.ToInt32(a);
+                i.Add(d);
             }
-            catch (Exception ex)
+            var ids = PredicateBuilder.New<Humanresources>(true);
+            ids.And(t => i.Contains(t.Id));
+
+            var list = await _IHumanResourcesRepository.GetAllListAsync(ids);
+
+            var name = "";
+            foreach (var nameshow in list)
             {
-
-                throw;
+                name += nameshow.Name + "    ";
             }
+            name = name.Substring(0, name.Length - 1);
+            Dtp.NameShow = name;
+            PageModel<NoticeDto> Notice = new PageModel<NoticeDto>();
+            Notice.Item = Dtp;
+            return Notice;
         }
 
+
         /// <summary>
-        /// 公告列表的反填
+        /// 合同信息列表的反填
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<PageModel<Notice>> ReverContractInfo(int id)
+        public async Task<PageModel<Notice>> ReverNotice(int id)
         {
             var contra = PredicateBuilder.New<Notice>(m => m.Id == id);
-            Notice notice = await _noticeRepository.FirstOrDefaultAsync(contra);
+            Notice contractInfo = await _INoticeRepository.FirstOrDefaultAsync(contra);
             var pagemodel = new PageModel<Notice>()
             {
-                Item = notice,
+                Item = contractInfo,
             };
             return pagemodel;
         }
 
         /// <summary>
-        /// 公告的修改
+        /// 合同信息的修改
         /// </summary>
         /// <param name="notice"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<PageModel<Notice>> UpContractInfo(Notice notice)
+        public async Task<PageModel<Notice>> UpReverNotice(Notice notice)
         {
-            var cont = await _noticeRepository.UpdateAsync(notice);
+            var cont = await _INoticeRepository.UpdateAsync(notice);
             var pagemodel = new PageModel<Notice>()
             {
                 Code = cont ? "1" : "0"
@@ -110,21 +168,22 @@ namespace House.API.Controllers
         }
 
         /// <summary>
-        /// 公告的录入
+        /// 删除
         /// </summary>
-        /// <param name="notice"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<bool> CustAdd(Notice notice)
+        [HttpGet]
+        public async Task<bool> Delete(int id)
         {
             try
             {
-                var res = await _noticeRepository.InsertAsync(notice);
-                return res;
+                var predicate = PredicateBuilder.New<Notice>(true);
+                predicate.And(t => t.Id == id);
+                return await _INoticeRepository.DeleteAsync(predicate);
             }
             catch (Exception)
             {
-
+                return false;
                 throw;
             }
         }
