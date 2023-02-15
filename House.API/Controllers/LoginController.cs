@@ -1,11 +1,15 @@
 ﻿using House.Dto;
 using House.IRepository;
+using House.IRepository.NoticeManage;
 using House.IRepository.User;
 using House.Model;
+using House.Repository.Noticement;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using NPOI.SS.Formula.Functions;
 using SecretDemo;
+using Smart.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +31,17 @@ namespace House.API.Controllers
         private readonly IRoleRepository _IRoleRepository;
         private readonly IRolePowerRepository _IRolePowerRepository;
         private readonly IPowerRepository _IPowerRepository;
+        private readonly ILoginLogRepository _loginLogRepository;
 
-        public LoginController(IPersonnelRepository iPersonnelRepository, IPersonnelRoleRepository iPersonnelRoleRepository, IRoleRepository iRoleRepository, IRolePowerRepository iRolePowerRepository, IPowerRepository iPowerRepository)
+        public LoginController(IPersonnelRepository iPersonnelRepository, IPersonnelRoleRepository iPersonnelRoleRepository, IRoleRepository iRoleRepository, IRolePowerRepository iRolePowerRepository, IPowerRepository iPowerRepository,ILoginLogRepository loginLogRepository)
         {
             _IPersonnelRepository = iPersonnelRepository;
             _IPersonnelRoleRepository = iPersonnelRoleRepository;
             _IRoleRepository = iRoleRepository;
             _IRolePowerRepository = iRolePowerRepository;
             _IPowerRepository = iPowerRepository;
+            _loginLogRepository = loginLogRepository;
         }
-
         /// <summary>
         /// 登录功能
         /// </summary>
@@ -63,6 +68,19 @@ namespace House.API.Controllers
                 Token<Personnel> d = new Token<Personnel>();
                 d.Result = data;
 
+                if (data!=null)
+                {
+                    Loginlog loginlog = new Loginlog
+                    {
+                        User = data.Name,
+                        LoginTime = DateTime.Now,
+                        PCIP = Convert.ToString(NetWorkHelper.GetIPInfo()),
+                        PCName = NetWorkHelper.GetComputerName(),
+                        OS = NetWorkHelper.GetOSDesc(),
+                        Browser = NetWorkHelper.GetBrowser(Request.Headers["User-Agent"].ToString())
+                    };
+                    _loginLogRepository.Insert(loginlog);
+                }
                 return d;
             }
             else
@@ -209,5 +227,27 @@ namespace House.API.Controllers
         //    byte[] b = fs.ToArray();
         //    return File(b, System.Net.Mime.MediaTypeNames.Application.Octet, "车辆数据.xls"); //关键语句
         //}
+
+
+        /// <summary>
+        /// 显示合同信息列表
+        /// </summary>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PageModel<Loginlog>> GetLogin(int pageindex, int pagesize)
+        {
+            var predicate = PredicateBuilder.New<Loginlog>(true);
+
+            var data = await _loginLogRepository.GetAllListAsync(predicate);
+
+            int i = data.Count();
+            PageModel<Loginlog> datalist = new PageModel<Loginlog>();
+            datalist.DataCount = i;
+            datalist.PageCount = (int)Math.Ceiling(data.Count() * 1.0 / pagesize);
+            datalist.Data = data.Skip((pageindex - 1) * pagesize).Take(pagesize).ToList();
+            return datalist;
+        }
     }
 }

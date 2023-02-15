@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace House.Model
+namespace House.Dto
 {
-    /// <summary>
-    /// 通知表
-    /// </summary>
-    public class Notice : EntityBase
+    public class NoticeDto
     {
-        
+
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime ReleaseTime { get; set; }
         public string PublishUser { get; set; }
         public int State { get; set; }
-        public string AcceptRole { get; set; }
-        public int AcceptClass { get; set; }
+       
+
+        public string NameShow { get; set; }
     }
 }

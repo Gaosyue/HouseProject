@@ -1,7 +1,9 @@
 ﻿using House.Model;
 using House.Model.ContractManagement;
 using House.Model.CustomerManagement;
+using House.Model.DeviceManagement;
 using House.Model.OperationsManagement;
+using House.Model.PerformanceManagement;
 using House.Model.SystemSettings;
 using House.Model.TimeAndAttendanceManagement;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +52,11 @@ namespace House.Core
         /// </summary>
         public virtual DbSet<WaterMeter> WaterMeter { get; set; }
 
+
+        /// <summary>
+        /// 电表
+        /// </summary>
+        public virtual DbSet<Electricmeter> Electricmeter { get; set; }
         #endregion
 
 
@@ -128,6 +135,36 @@ namespace House.Core
         /// 公告表
         /// </summary>
         public virtual DbSet<Notice> Notice { get; set; }
+
+        /// <summary>
+        /// 日志表
+        /// </summary>
+        public virtual DbSet<Loginlog> Loginlog { get; set; }
+
+        #endregion
+
+        #region 人力资源管理
+        /// <summary>
+        /// 人力资源管理
+        /// </summary>
+        public virtual DbSet<Humanresources> Humanresources { get; set; }
+        #endregion
+
+        #region 人力资源管理
+        /// <summary>
+        /// 人力资源管理
+        /// </summary>
+        public virtual DbSet<Assessment> Assessment { get; set; }
+
+        /// <summary>
+        /// 考核项目明细表
+        /// </summary>
+        public virtual DbSet<AssessmentItem> AssessmentItem { get; set; }
+
+        /// <summary>
+        /// 考核任务与项目关联表
+        /// </summary>
+        public virtual DbSet<Appraisalrelation> Appraisalrelation { get; set; }
         #endregion
     }
 }
