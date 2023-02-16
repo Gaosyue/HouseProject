@@ -1,4 +1,5 @@
 ﻿using Core.Cache;
+using ExportImportExcle;
 using House.Dto;
 using House.IRepository.ContractManagement;
 using House.Model.ContractManagement;
@@ -7,8 +8,11 @@ using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -361,6 +365,52 @@ namespace House.API.Controllers
                 Code = cont ? "1" : "0"
             };
             return pagemodel;
+        }
+
+        /// <summary>
+        /// 导出数据到Excel中
+        /// </summary>
+        [HttpGet]
+        public async Task<FileResult> PersonNpoiExportExcel()
+        {
+            //定义工作簿
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            //创建Sheet表单
+            HSSFSheet sheet = (HSSFSheet)workbook.CreateSheet("合同信息");
+            //设置表单列的宽度
+            sheet.DefaultColumnWidth = 20;
+
+            //新建标题行
+            HSSFRow dataRow = (HSSFRow)sheet.CreateRow(0);
+            dataRow.CreateCell(0).SetCellValue("合同编号");
+            dataRow.CreateCell(1).SetCellValue("合同名称");
+            dataRow.CreateCell(2).SetCellValue("建设单位");
+            dataRow.CreateCell(3).SetCellValue("合同额");
+            dataRow.CreateCell(4).SetCellValue("实际合同额");
+            dataRow.CreateCell(5).SetCellValue("签约日期");
+            dataRow.CreateCell(6).SetCellValue("工程负责人");
+            dataRow.CreateCell(7).SetCellValue("时间");
+
+            var row = 1;
+            var data = await _contractInfoRepository.GetAllListAsync();
+            data.ForEach(m =>
+            {
+                dataRow = (HSSFRow)sheet.CreateRow(row);//新建数据行
+                dataRow.CreateCell(0).SetCellValue(m.Id);
+                dataRow.CreateCell(1).SetCellValue(m.ContractId);
+                dataRow.CreateCell(2).SetCellValue(m.ContractNum);
+                dataRow.CreateCell(3).SetCellValue(m.ConstructionUnit);
+                dataRow.CreateCell(4).SetCellValue(m.OriginalAmount.ToString());
+                dataRow.CreateCell(5).SetCellValue(m.ActualAmount.ToString());
+                dataRow.CreateCell(6).SetCellValue(m.ProjectLeader);
+                dataRow.CreateCell(7).SetCellValue(m.SigningDate.ToString());
+                row++;
+            });
+            var fs = new MemoryStream();
+            workbook.Write(fs);
+            byte[] b = fs.ToArray();
+            //关键语句
+            return File(b, System.Net.Mime.MediaTypeNames.Application.Octet, "合同信息数据.xls"); 
         }
     }
 }
