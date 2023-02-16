@@ -12,6 +12,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace House.API
 {
@@ -106,6 +107,7 @@ namespace House.API
                 c.SwaggerEndpoint("/swagger/Projectinfo/swagger.json", "项目立项");
                 c.SwaggerEndpoint("/swagger/Notice/swagger.json", "公告管理");
                 c.SwaggerEndpoint("/swagger/Assessment/swagger.json", "考核列表");
+                c.SwaggerEndpoint("/swagger/Application/swagger.json", "考勤申请");
             });
         }
 
@@ -157,7 +159,7 @@ namespace House.API
                 {
                     Version = "v1.0.0",
                     Title = "项目立项"
-                });
+                }); 
                 options.SwaggerDoc("Notice", new OpenApiInfo
                 {
                     Version = "v1.0.0",
