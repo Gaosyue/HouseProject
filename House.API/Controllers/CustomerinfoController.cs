@@ -21,6 +21,7 @@ using House.IRepository.ContractManagement;
 using House.Model.ContractManagement;
 using NPOI.POIFS.Crypt.Dsig;
 using House.Repository.ContractManagement;
+using NPOI.HSSF.UserModel;
 
 namespace House.API.Controllers
 {
@@ -544,7 +545,47 @@ namespace House.API.Controllers
             return new PageModel<Customerinfo> { Item = cust };
         }
 
+        /// <summary>
+        /// 导出数据到Excel中
+        /// </summary>
+        [HttpGet]
+        public async Task<FileResult> PersonNpoiExportExcel()
+        {
+            //定义工作簿
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            //创建Sheet表单
+            HSSFSheet sheet = (HSSFSheet)workbook.CreateSheet("联系人信息");
+            //设置表单列的宽度
+            sheet.DefaultColumnWidth = 20;
 
+            //新建标题行
+            HSSFRow dataRow = (HSSFRow)sheet.CreateRow(0);
+            dataRow.CreateCell(0).SetCellValue("姓名");
+            dataRow.CreateCell(1).SetCellValue("职务");
+            dataRow.CreateCell(2).SetCellValue("部门");
+            dataRow.CreateCell(3).SetCellValue("电话");
+            dataRow.CreateCell(4).SetCellValue("Email");
+            dataRow.CreateCell(5).SetCellValue("录入时间");
+
+            var row = 1;
+            var data = await _personchargeRepository.GetAllListAsync();
+            data.ForEach(m =>
+            {
+                dataRow = (HSSFRow)sheet.CreateRow(row);//新建数据行
+                dataRow.CreateCell(0).SetCellValue(m.Name);
+                dataRow.CreateCell(1).SetCellValue(m.Post);
+                dataRow.CreateCell(2).SetCellValue(m.Phone);
+                dataRow.CreateCell(3).SetCellValue(m.Dep);
+                dataRow.CreateCell(4).SetCellValue(m.Email);
+                dataRow.CreateCell(5).SetCellValue(m.EntryTime.ToString());
+                row++;
+            });
+            var fs = new MemoryStream();
+            workbook.Write(fs);
+            byte[] b = fs.ToArray();
+            //关键语句
+            return File(b, System.Net.Mime.MediaTypeNames.Application.Octet, "联系人信息数据.xls");
+        }
 
 
         ///// <summary>
