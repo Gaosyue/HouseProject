@@ -170,6 +170,11 @@ namespace House.API
                     Version = "v1.0.0",
                     Title = "考核列表"
                 });
+                options.SwaggerDoc("Application", new OpenApiInfo
+                {
+                    Version = "v1.0.0",
+                    Title = "考核列表"
+                });
                 //按照分组取api文档
                 options.DocInclusionPredicate((docName, apiDes) =>
                 {
