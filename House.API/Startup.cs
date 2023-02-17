@@ -163,7 +163,7 @@ namespace House.API
                 options.SwaggerDoc("Notice", new OpenApiInfo
                 {
                     Version = "v1.0.0",
-                    Title = "公告管理1"
+                    Title = "公告管理"
                 });
                 options.SwaggerDoc("Assessment", new OpenApiInfo
                 {
@@ -173,7 +173,7 @@ namespace House.API
                 options.SwaggerDoc("Application", new OpenApiInfo
                 {
                     Version = "v1.0.0",
-                    Title = "考核列表"
+                    Title = "考勤管理"
                 });
                 //按照分组取api文档
                 options.DocInclusionPredicate((docName, apiDes) =>
